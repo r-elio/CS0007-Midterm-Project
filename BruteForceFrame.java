@@ -42,6 +42,7 @@ public class BruteForceFrame extends JFrame {
 		sortButton = new JButton("Sort");
 		sortButton.setPreferredSize(new Dimension(75,25));
 		sortButton.setFocusable(false);
+		sortButton.addActionListener(new SortListener());
 
 		buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		buttonPanel.add(resetButton);
@@ -84,6 +85,22 @@ public class BruteForceFrame extends JFrame {
 		});
 	}
 
+	private class SourceListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent event){
+			if (srcArray != null){
+				int response = JOptionPane.showConfirmDialog(rootPane, "Do you want to change the array source?", 
+				"Array Source", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (response == JOptionPane.YES_OPTION){
+					setArraySource();
+				}
+			}
+			else {
+				setArraySource();
+			}
+		}
+	}
+
 	private class ResetListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event){
@@ -97,18 +114,12 @@ public class BruteForceFrame extends JFrame {
 		}
 	}
 
-	private class SourceListener implements ActionListener {
+	private class SortListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event){
-			if (srcArray != null){
-				int response = JOptionPane.showConfirmDialog(rootPane, "Do you want to change the array source?", 
-				"Array Source", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if (response == JOptionPane.YES_OPTION){
-					setArraySource();
-				}
-			}
-			else {
-				setArraySource();
+			if (srcArray == null){
+				JOptionPane.showMessageDialog(rootPane, "You must set the source array first.", 
+				"Null Source", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 	}
