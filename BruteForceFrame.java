@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -19,6 +20,7 @@ public class BruteForceFrame extends JFrame {
 
 	private String inputStr = "";
 	private ArrayList<Integer> inputArray;
+	private String outputStr = "";
 
 	private static final String[] SORTALGO = {"Bubble Sort","Selection Sort"};
 
@@ -109,16 +111,14 @@ public class BruteForceFrame extends JFrame {
 
 	private void setInputArray(){
 		JTextArea inputArea = new JTextArea(inputStr);
-		inputArea.setFont(new Font("Consolas",Font.PLAIN,16));
 		JScrollPane inputScroll = new JScrollPane(inputArea);
 		inputScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		inputScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		inputScroll.setPreferredSize(new Dimension(300,300));
 
-		Object[] prompt = {inputScroll};
-		Object[] options = {"Save","Reset","Cancel"};
+		Object[] options = {"Set","Reset","Cancel"};
 
-		JOptionPane optionPane = new JOptionPane(prompt, JOptionPane.PLAIN_MESSAGE,
+		JOptionPane optionPane = new JOptionPane(inputScroll, JOptionPane.PLAIN_MESSAGE,
 		JOptionPane.OK_CANCEL_OPTION, null, options);
 
 		JDialog dialog = new JDialog(this, "Input", true);
@@ -159,11 +159,6 @@ public class BruteForceFrame extends JFrame {
 
 							inputArray = tempArray;
 
-							for (Integer i : inputArray){
-								System.out.print(i + " ");
-							}
-							System.out.println();
-
 							dialog.dispose();
 						}
 						catch (NumberFormatException e){
@@ -196,7 +191,113 @@ public class BruteForceFrame extends JFrame {
 	}
 
 	private void setOutputArray(){
-		
+		sortArray();
+		JTextArea outputPane = new JTextArea(outputStr);
+		outputPane.setEditable(false);
+		outputPane.setFocusable(false);
+		JScrollPane outputScroll = new JScrollPane(outputPane);
+		outputScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		outputScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		outputScroll.setPreferredSize(new Dimension(500,500));
+
+		Object[] options = {"Save","Close"};
+
+		JOptionPane optionPane = new JOptionPane(outputScroll, JOptionPane.PLAIN_MESSAGE,
+		JOptionPane.OK_CANCEL_OPTION, null, options);
+
+		JDialog dialog = new JDialog(this, SORTALGO[sortBox.getSelectedIndex()], true);
+		dialog.setContentPane(optionPane);
+
+		optionPane.addPropertyChangeListener(new PropertyChangeListener(){
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (JOptionPane.VALUE_PROPERTY.equals(event.getPropertyName())){
+					if (optionPane.getValue().equals(options[0])){
+						
+					}
+					else if (optionPane.getValue().equals(options[1])){
+						optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+						dialog.dispose();
+					}
+				}
+			}
+		});
+
+		dialog.pack();
+		dialog.setLocationRelativeTo(rootPane);
+		dialog.setVisible(true);
+	}
+
+	private void sortArray(){
+		outputStr = "";
+		int[] arr = new int[inputArray.size()];
+		for (int i = 0; i < inputArray.size(); ++i){
+			arr[i] = inputArray.get(i);
+		}
+
+		outputStr += "Pass # 0\n";
+		outputStr += printArray(arr) + "\n\n\n";
+
+		if (String.valueOf(sortBox.getSelectedItem()) == SORTALGO[0]){
+			arr = bubbleSort(arr);
+		}
+		else if (String.valueOf(sortBox.getSelectedItem()) == SORTALGO[1]){
+			arr = selectionSort(arr);
+		}
+
+		outputStr += "original array:\t";
+		for (int i = 0; i < inputArray.size(); ++i){
+			outputStr += inputArray.get(i) + " ";
+		}
+		outputStr += "\nsorted array:\t" + printArray(arr) + '\n';
+	}
+
+	private String printArray(int[] arr){
+		String str = "";
+		for (int i = 0; i < arr.length; ++i){
+			str += arr[i] + " "; 
+		}
+		return str;
+	}
+
+	private int[] bubbleSort(int[] arr){
+		int comparisons = 0;
+		int swaps = 0;
+
+		for (int i = 0; i < (arr.length - 1); ++i){
+			outputStr += "Pass # " + (i+1) + '\n';
+			for (int j = (arr.length - 1); j > i; --j){
+				int key = Integer.MAX_VALUE;
+				outputStr += printArray(arr) + '\n';
+				outputStr += arr[j-1] + " > " + arr[j] + '\n';
+
+				if (arr[j-1] > arr[j]){
+					key = arr[j];
+					arr[j] = arr[j-1];
+					arr[j-1] = key;
+				}
+
+				if (key != Integer.MAX_VALUE){
+					outputStr += "swap";
+					++swaps;
+				}
+				++comparisons;
+				
+				outputStr += "\n\n";
+			}
+			
+			outputStr += printArray(arr) + "\n\n\n";
+		}
+
+		outputStr += "input size = " + arr.length + '\n';
+		outputStr += "no. of comparisons = " + comparisons + '\n';
+		outputStr += "no. of swaps = " + swaps + '\n';
+
+		return arr;
+	}
+
+	private int[] selectionSort(int[] arr){
+		return arr;
 	}
 
 	public static void main(String[] args) {
