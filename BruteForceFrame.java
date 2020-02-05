@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.*;
 
 
@@ -9,24 +10,20 @@ public class BruteForceFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private GridBagConstraints constraints;
 	private JPanel sortPanel;
-	private JButton sourceButton;
 	private JPanel comboPanel;
 	private JLabel sortLabel;
 	private JComboBox<String> sortBox;
 	private JPanel buttonPanel;
-	private JButton resetButton;
+	private JButton inputButton;
 	private JButton sortButton;
 
-	private ArrayList<Integer> srcArray;
+	private String inputStr = "";
+	private ArrayList<Integer> inputArray;
 
 	private static final String[] SORTALGO = {"Bubble Sort","Selection Sort"};
 
 	public BruteForceFrame(){
 		setTitle("Brute Force Algorithm");
-
-		sourceButton = new JButton("Input Source");
-		sourceButton.setFocusable(false);
-		sourceButton.addActionListener(new SourceListener());
 
 		sortLabel = new JLabel("Sort Type: ");
 
@@ -34,10 +31,10 @@ public class BruteForceFrame extends JFrame {
 		sortBox.setSelectedIndex(0);
 		sortBox.setFocusable(false);
 
-		resetButton = new JButton("Reset");
-		resetButton.setPreferredSize(new Dimension(75,25));
-		resetButton.setFocusable(false);
-		resetButton.addActionListener(new ResetListener());
+		inputButton = new JButton("Input");
+		inputButton.setPreferredSize(new Dimension(75,25));
+		inputButton.setFocusable(false);
+		inputButton.addActionListener(new InputListener());
 
 		sortButton = new JButton("Sort");
 		sortButton.setPreferredSize(new Dimension(75,25));
@@ -45,7 +42,7 @@ public class BruteForceFrame extends JFrame {
 		sortButton.addActionListener(new SortListener());
 
 		buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		buttonPanel.add(resetButton);
+		buttonPanel.add(inputButton);
 		buttonPanel.add(sortButton);
 
 		comboPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -59,14 +56,10 @@ public class BruteForceFrame extends JFrame {
 
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		sortPanel.add(sourceButton,constraints);
-
-		constraints.gridx = 0;
-		constraints.gridy = 1;
 		sortPanel.add(comboPanel,constraints);
 
 		constraints.gridx = 0;
-		constraints.gridy = 2;
+		constraints.gridy = 1;
 		sortPanel.add(buttonPanel,constraints);
 
 		add(sortPanel);
@@ -85,31 +78,18 @@ public class BruteForceFrame extends JFrame {
 		});
 	}
 
-	private class SourceListener implements ActionListener {
+	private class InputListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event){
-			if (srcArray != null){
-				int response = JOptionPane.showConfirmDialog(rootPane, "Do you want to change the array source?", 
-				"Array Source", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if (inputArray != null && inputArray.size() != 0){
+				int response = JOptionPane.showConfirmDialog(rootPane, "Do you want to change the input?", 
+				"Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (response == JOptionPane.YES_OPTION){
-					setArraySource();
+					setInputArray();
 				}
 			}
 			else {
-				setArraySource();
-			}
-		}
-	}
-
-	private class ResetListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent event){
-			if (srcArray != null){
-				int response = JOptionPane.showConfirmDialog(rootPane, "Do you want to reset?", 
-				"Reset", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if (response == JOptionPane.YES_OPTION){
-					srcArray = null;
-				}
+				setInputArray();
 			}
 		}
 	}
@@ -117,66 +97,106 @@ public class BruteForceFrame extends JFrame {
 	private class SortListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event){
-			if (srcArray == null){
-				JOptionPane.showMessageDialog(rootPane, "You must set the source array first.", 
-				"Null Source", JOptionPane.WARNING_MESSAGE);
+			if (inputArray == null || inputArray.size() == 0){
+				JOptionPane.showMessageDialog(rootPane, "You must set the input first.", 
+				"Null Input", JOptionPane.WARNING_MESSAGE);
+			}
+			else {
+				setOutputArray();
 			}
 		}
 	}
 
-	private void setArraySource(){
-		try {
-			JFileChooser sourceFile = new JFileChooser();
-			sourceFile.showOpenDialog(rootPane);
+	private void setInputArray(){
+		JTextArea inputArea = new JTextArea(inputStr);
+		inputArea.setFont(new Font("Consolas",Font.PLAIN,16));
+		JScrollPane inputScroll = new JScrollPane(inputArea);
+		inputScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		inputScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		inputScroll.setPreferredSize(new Dimension(300,300));
 
-			FileReader fReader = new FileReader(sourceFile.getSelectedFile());
-			BufferedReader bReader = new BufferedReader(fReader);
+		Object[] prompt = {inputScroll};
+		Object[] options = {"Save","Reset","Cancel"};
 
-			ArrayList<Integer> tempArray = new ArrayList<Integer>();
+		JOptionPane optionPane = new JOptionPane(prompt, JOptionPane.PLAIN_MESSAGE,
+		JOptionPane.OK_CANCEL_OPTION, null, options);
 
-			String inputStr = null;
-			while ((inputStr = bReader.readLine()) != null){
-				if (inputStr.isEmpty()){
-					bReader.close();
-					throw new IOException("Empty String Detected");
-				}
+		JDialog dialog = new JDialog(this, "Input", true);
+		dialog.setContentPane(optionPane);
 
-				Integer input = Integer.valueOf(inputStr);
+		optionPane.addPropertyChangeListener(new PropertyChangeListener(){
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (JOptionPane.VALUE_PROPERTY.equals(event.getPropertyName())){
+					if (optionPane.getValue().equals(options[0])){
+						optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+						try {
+							ArrayList<Integer> tempArray = new ArrayList<Integer>();
 
-				for (int i = 0; i < tempArray.size(); ++i){
-					if (input == tempArray.get(i)){
-						bReader.close();
-						throw new NumberFormatException("Duplicate Number Detected!");
+							inputStr = inputArea.getText();
+							String str = "";
+							for (int i = 0; i < inputStr.length(); ++i){
+								if (inputStr.charAt(i) != ' ' && 
+									inputStr.charAt(i) != '\n' && 
+									inputStr.charAt(i) != '\t'){
+									str = str + inputStr.charAt(i);
+								}
+
+								if (!(str.isEmpty()) && (inputStr.charAt(i) == ' ' || inputStr.charAt(i) == '\n' || 
+									inputStr.charAt(i) == '\t' || i == (inputStr.length() - 1))){
+									Integer input = Integer.valueOf(str);
+
+									for (int j = 0; j < tempArray.size(); ++j){
+										if (input == tempArray.get(j)){
+											throw new NumberFormatException("Duplicate Number Detected (" + input + ")");
+										}
+									}
+
+									tempArray.add(input);
+									str = "";
+								}
+							}
+
+							inputArray = tempArray;
+
+							for (Integer i : inputArray){
+								System.out.print(i + " ");
+							}
+							System.out.println();
+
+							dialog.dispose();
+						}
+						catch (NumberFormatException e){
+							JOptionPane.showMessageDialog(rootPane, "NumberFormatException:\n" 
+							+ e.getMessage(), "Number Format Exception", JOptionPane.ERROR_MESSAGE);
+						}
+						catch (Exception e){
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(rootPane, "Unimplemented Exception:\n" 
+							+ e.getMessage(), "Exception", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					else if (optionPane.getValue().equals(options[1])){
+						optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+						inputArea.setText("");
+						inputStr = "";
+						inputArray = null;
+					}
+					else if (optionPane.getValue().equals(options[2])){
+						optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+						dialog.dispose();
 					}
 				}
-
-				tempArray.add(input);
 			}
+		});
 
-			srcArray = tempArray;
+		dialog.pack();
+		dialog.setLocationRelativeTo(rootPane);
+		dialog.setVisible(true);
+	}
 
-			for (Integer i : srcArray){
-				System.out.print(i + " ");
-			}
-
-			bReader.close();
-		}
-		catch (IOException e){
-			JOptionPane.showMessageDialog(rootPane, "IOException:\n" 
-            + e.getMessage(), "I/O Exception", JOptionPane.ERROR_MESSAGE);
-		}
-		catch (NumberFormatException e){
-			JOptionPane.showMessageDialog(rootPane, "NumberFormatException:\n" 
-            + e.getMessage(), "Number Format Exception", JOptionPane.ERROR_MESSAGE);
-		}
-		catch (NullPointerException e){
-			// Expected Exception
-		}
-		catch (Exception e){
-			e.printStackTrace();
-            JOptionPane.showMessageDialog(rootPane, "Unimplemented Exception:\n" 
-            + e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
-		}
+	private void setOutputArray(){
+		
 	}
 
 	public static void main(String[] args) {
