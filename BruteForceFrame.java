@@ -235,9 +235,6 @@ public class BruteForceFrame extends JFrame {
 			arr[i] = inputArray.get(i);
 		}
 
-		outputStr += "Pass # 0\n";
-		outputStr += printArray(arr) + "\n\n\n";
-
 		if (String.valueOf(sortBox.getSelectedItem()) == SORTALGO[0]){
 			arr = bubbleSort(arr);
 		}
@@ -264,6 +261,9 @@ public class BruteForceFrame extends JFrame {
 		int comparisons = 0;
 		int swaps = 0;
 
+		outputStr += "Pass # 0\n";
+		outputStr += printArray(arr) + "\n\n\n";
+
 		for (int i = 0; i < (arr.length - 1); ++i){
 			outputStr += "Pass # " + (i+1) + '\n';
 			for (int j = (arr.length - 1); j > i; --j){
@@ -278,7 +278,7 @@ public class BruteForceFrame extends JFrame {
 				}
 
 				if (key != Integer.MAX_VALUE){
-					outputStr += "swap";
+					outputStr += arr[j] + " <-> " + arr[j-1];
 					++swaps;
 				}
 				++comparisons;
@@ -297,6 +297,47 @@ public class BruteForceFrame extends JFrame {
 	}
 
 	private int[] selectionSort(int[] arr){
+		int comparisons = 0;
+		int swaps = 0;
+
+		outputStr += "Pass # 0\n";
+		outputStr += printArray(arr) + "\n\n\n";
+
+		for (int i = 0; i < (arr.length-1); ++i){
+			outputStr += "Pass # " + (i+1) + '\n';
+
+			int key = arr[i];
+			int index = i;
+			
+			for (int j = (i+1); j < arr.length; ++j){
+				outputStr += printArray(arr) + '\n';
+				outputStr += "key = " + key + '\n';
+				outputStr += key + " > " + arr[j] +'\n'; 
+
+				if (key > arr[j]){
+					key = arr[j];
+					index = j;
+				}
+				++comparisons;
+
+				outputStr += '\n';
+			}
+			arr[index] = arr[i];
+			arr[i] = key;
+
+			outputStr += printArray(arr) + '\n';
+			outputStr += "key = " + key + '\n';
+			if (index != i){
+				outputStr += arr[index] + " <-> " + arr[i];
+				++swaps;
+			}
+			outputStr += "\n\n";
+		}
+
+		outputStr += "input size = " + arr.length + '\n';
+		outputStr += "no. of comparisons = " + comparisons + '\n';
+		outputStr += "no. of swaps = " + swaps + '\n';
+
 		return arr;
 	}
 
