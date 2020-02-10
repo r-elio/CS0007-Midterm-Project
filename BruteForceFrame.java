@@ -1,6 +1,6 @@
 import javax.swing.*;
-import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.io.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,6 +21,10 @@ public class BruteForceFrame extends JFrame {
 	private String inputStr = "";
 	private ArrayList<Integer> inputArray;
 	private String outputStr = "";
+
+	private int inputSize;
+	private int comparisonSize;
+	private int swapSize;
 
 	private static final String[] SORTALGO = {"Bubble Sort","Selection Sort"};
 
@@ -200,7 +204,7 @@ public class BruteForceFrame extends JFrame {
 		outputScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		outputScroll.setPreferredSize(new Dimension(500,500));
 
-		Object[] options = {"Save","Close"};
+		Object[] options = {"Save","Summary","Close"};
 
 		JOptionPane optionPane = new JOptionPane(outputScroll, JOptionPane.PLAIN_MESSAGE,
 		JOptionPane.OK_CANCEL_OPTION, null, options);
@@ -213,9 +217,34 @@ public class BruteForceFrame extends JFrame {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (JOptionPane.VALUE_PROPERTY.equals(event.getPropertyName())){
 					if (optionPane.getValue().equals(options[0])){
-						
+						try {
+							JFileChooser source = new JFileChooser();
+							source.showSaveDialog(null);
+							FileWriter fWriter = new FileWriter(source.getSelectedFile());
+							BufferedWriter bWriter = new BufferedWriter(fWriter);
+							bWriter.write(outputStr);
+							bWriter.write("\ninput size: " + inputSize + 
+										  "\nno. of comparison: " + comparisonSize + 
+										  "\nno. of swap: " + swapSize);
+							bWriter.close();
+						}
+						catch (IOException e){
+							JOptionPane.showMessageDialog(rootPane, "IOException:\n" 
+							+ e.getMessage(), "I/O Exception", JOptionPane.ERROR_MESSAGE);
+						}
+						catch (Exception e){
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(rootPane, "Unimplemented Exception:\n" 
+							+ e.getMessage(), "Exception", JOptionPane.ERROR_MESSAGE);
+						}
 					}
-					else if (optionPane.getValue().equals(options[1])){
+					if (optionPane.getValue().equals(options[1])){
+						JOptionPane.showMessageDialog(rootPane, "input size: " + inputSize + 
+																"\nno. of comparison: " + comparisonSize + 
+																"\nno. of swap: " + swapSize, 
+																"Summary", JOptionPane.INFORMATION_MESSAGE);
+					}
+					else if (optionPane.getValue().equals(options[2])){
 						optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 						dialog.dispose();
 					}
@@ -289,9 +318,9 @@ public class BruteForceFrame extends JFrame {
 			outputStr += printArray(arr) + "\n\n\n";
 		}
 
-		outputStr += "input size = " + arr.length + '\n';
-		outputStr += "no. of comparisons = " + comparisons + '\n';
-		outputStr += "no. of swaps = " + swaps + '\n';
+		inputSize = arr.length;
+		comparisonSize = comparisons;
+		swapSize = swaps;
 
 		return arr;
 	}
@@ -334,9 +363,9 @@ public class BruteForceFrame extends JFrame {
 			outputStr += "\n\n";
 		}
 
-		outputStr += "input size = " + arr.length + '\n';
-		outputStr += "no. of comparisons = " + comparisons + '\n';
-		outputStr += "no. of swaps = " + swaps + '\n';
+		inputSize = arr.length;
+		comparisonSize = comparisons;
+		swapSize = swaps;
 
 		return arr;
 	}
