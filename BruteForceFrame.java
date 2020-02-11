@@ -232,6 +232,9 @@ public class BruteForceFrame extends JFrame {
 							JOptionPane.showMessageDialog(rootPane, "IOException:\n" 
 							+ e.getMessage(), "I/O Exception", JOptionPane.ERROR_MESSAGE);
 						}
+						catch (NullPointerException e){
+							// Expected Exception
+						}
 						catch (Exception e){
 							e.printStackTrace();
 							JOptionPane.showMessageDialog(rootPane, "Unimplemented Exception:\n" 
