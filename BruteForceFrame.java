@@ -21,11 +21,17 @@ public class BruteForceFrame extends JFrame {
 	private String inputStr = "";
 	private ArrayList<Integer> inputArray;
 	private String outputStr = "";
-
+        
+        private JMenuBar menuBar;
+        private JMenu menu;
+        private JMenuItem aboutUs;
+        private JMenuItem aboutSys;
+        
 	private int inputSize;
 	private int comparisonSize;
 	private int swapSize;
 
+        
 	private static final String[] SORTALGO = {"Bubble Sort","Selection Sort"};
 
 	public BruteForceFrame(){
@@ -36,7 +42,9 @@ public class BruteForceFrame extends JFrame {
 		sortBox = new JComboBox<String>(SORTALGO);
 		sortBox.setSelectedIndex(0);
 		sortBox.setFocusable(false);
-
+                
+                
+                
 		inputButton = new JButton("Input");
 		inputButton.setPreferredSize(new Dimension(75,25));
 		inputButton.setFocusable(false);
@@ -69,7 +77,101 @@ public class BruteForceFrame extends JFrame {
 		sortPanel.add(buttonPanel,constraints);
 
 		add(sortPanel);
+                
+                menuBar = new JMenuBar();
+                menu = new JMenu("About");
+                
+                aboutUs = new JMenuItem("About us");
+                aboutSys = new JMenuItem("About system");
+                
+               
+                menu.add(aboutUs);
+                menu.add(aboutSys);
+                
+                
+                menuBar.add(menu);
+                super.setJMenuBar(menuBar);
+                
+                aboutUs.addActionListener(new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent e)
+                    {
+                       
+                       if(e.getSource() == aboutUs)
+                       {
+                        JFrame Frame = new JFrame("About Us");
+                        Frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        JPanel panel = new JPanel();
+                        BoxLayout bl = new BoxLayout(panel, BoxLayout.Y_AXIS);
+                        panel.setLayout(bl);
+                        
+                        JLabel creator = new JLabel("Creators: ");
+                        JLabel name1 = new JLabel("Rajan Emil Ceasar Elio");
+                        JLabel name2 = new JLabel("Mark Danhill Egana");
+                        JLabel name3 = new JLabel("Abraham Isreal Fabian");
+                        JLabel name4 = new JLabel("Albert Josh Dizon");
+                        panel.add(creator);
+                        panel.add(name1);
+                        panel.add(name2);
+                        panel.add(name3);
+                        panel.add(name4);
+                        
+                        Frame.add(panel);
+                        
+                        Frame.pack();
+                        
+                       
+                        
+                        Frame.setLocationRelativeTo(menu);
+                        Frame.setVisible(true);
+                       }
+                        
+                    }
+                });
+                
+                aboutSys.addActionListener(new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent event)
+                    {
+       		    
 
+                    JFrame Frame = new JFrame();
+                    Frame.setTitle("About System");
+
+                    Frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    
+                    JPanel panel = new JPanel();
+                    BoxLayout bl = new BoxLayout(panel, BoxLayout.Y_AXIS);
+                    panel.setLayout(bl);
+                    
+                    JLabel instruct = new JLabel("How to use: ");
+                    
+                    JLabel step1a = new JLabel("Step 1:");
+                    JLabel step1b = new JLabel("Click the input.");
+                    JLabel step2a = new JLabel("Step 2:");
+                    JLabel step2b = new JLabel("Insert data. It reads left to right.");
+                    JLabel step3a = new JLabel("Step 3:");
+                    JLabel step3b = new JLabel("Choose a sorting algorithm.");
+                    JLabel step4a = new JLabel("Step 4:");
+                    JLabel step4b = new JLabel("Click sort.");
+                    panel.add(instruct);
+                    
+                    panel.add(step1a);
+                    panel.add(step1b);
+                    panel.add(step2a);
+                    panel.add(step2b);
+                    panel.add(step3a);
+                    panel.add(step3b);
+                    panel.add(step4a);
+                    panel.add(step4b);
+                    Frame.add(panel);
+                    
+                    Frame.pack();
+                    Frame.setLocationRelativeTo(menu);
+                    Frame.setVisible(true);
+                    }
+                });
+                
 		pack();
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter(){
@@ -112,7 +214,7 @@ public class BruteForceFrame extends JFrame {
 			}
 		}
 	}
-
+       
 	private void setInputArray(){
 		JTextArea inputArea = new JTextArea(inputStr);
 		JScrollPane inputScroll = new JScrollPane(inputArea);
@@ -224,8 +326,8 @@ public class BruteForceFrame extends JFrame {
 							BufferedWriter bWriter = new BufferedWriter(fWriter);
 							bWriter.write(outputStr);
 							bWriter.write("\ninput size: " + inputSize + 
-										  "\nno. of comparison: " + comparisonSize + 
-										  "\nno. of swap: " + swapSize);
+										  "\nNo. of comparison: " + comparisonSize + 
+										  "\nNo. of swap: " + swapSize);
 							bWriter.close();
 						}
 						catch (IOException e){
@@ -242,9 +344,9 @@ public class BruteForceFrame extends JFrame {
 						}
 					}
 					if (optionPane.getValue().equals(options[1])){
-						JOptionPane.showMessageDialog(rootPane, "input size: " + inputSize + 
-																"\nno. of comparison: " + comparisonSize + 
-																"\nno. of swap: " + swapSize, 
+						JOptionPane.showMessageDialog(rootPane, "Input size: " + inputSize + 
+																"\nNo. of comparison: " + comparisonSize + 
+																"\nNo. of swap: " + swapSize, 
 																"Summary", JOptionPane.INFORMATION_MESSAGE);
 					}
 					else if (optionPane.getValue().equals(options[2])){
