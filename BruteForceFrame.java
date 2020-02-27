@@ -99,31 +99,10 @@ public class BruteForceFrame extends JFrame {
                        
                        if(e.getSource() == aboutUs)
                        {
-                        JFrame Frame = new JFrame("About Us");
-                        Frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        JPanel panel = new JPanel();
-                        BoxLayout bl = new BoxLayout(panel, BoxLayout.Y_AXIS);
-                        panel.setLayout(bl);
-                        
-                        JLabel creator = new JLabel("Creators: ");
-                        JLabel name1 = new JLabel("Rajan Emil Ceasar Elio");
-                        JLabel name2 = new JLabel("Mark Danhill Egana");
-                        JLabel name3 = new JLabel("Abraham Isreal Fabian");
-                        JLabel name4 = new JLabel("Albert Josh Dizon");
-                        panel.add(creator);
-                        panel.add(name1);
-                        panel.add(name2);
-                        panel.add(name3);
-                        panel.add(name4);
-                        
-                        Frame.add(panel);
-                        
-                        Frame.pack();
-                        
-                       
-                        
-                        Frame.setLocationRelativeTo(menu);
-                        Frame.setVisible(true);
+						JOptionPane.showMessageDialog(rootPane, "Creators:\n" + "Rajan Emil Ceasar Elio\n"
+						+ "Mark Danhill Egana\n"
+						+ "Abraham Isreal Fabian\n"
+						+ "Albert Josh Dizon\n","About us",JOptionPane.PLAIN_MESSAGE);
                        }
                         
                     }
@@ -133,42 +112,10 @@ public class BruteForceFrame extends JFrame {
                 {
                     public void actionPerformed(ActionEvent event)
                     {
-       		    
-
-                    JFrame Frame = new JFrame();
-                    Frame.setTitle("About System");
-
-                    Frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    
-                    JPanel panel = new JPanel();
-                    BoxLayout bl = new BoxLayout(panel, BoxLayout.Y_AXIS);
-                    panel.setLayout(bl);
-                    
-                    JLabel instruct = new JLabel("How to use: ");
-                    
-                    JLabel step1a = new JLabel("Step 1:");
-                    JLabel step1b = new JLabel("Click the input.");
-                    JLabel step2a = new JLabel("Step 2:");
-                    JLabel step2b = new JLabel("Insert data. It reads left to right.");
-                    JLabel step3a = new JLabel("Step 3:");
-                    JLabel step3b = new JLabel("Choose a sorting algorithm.");
-                    JLabel step4a = new JLabel("Step 4:");
-                    JLabel step4b = new JLabel("Click sort.");
-                    panel.add(instruct);
-                    
-                    panel.add(step1a);
-                    panel.add(step1b);
-                    panel.add(step2a);
-                    panel.add(step2b);
-                    panel.add(step3a);
-                    panel.add(step3b);
-                    panel.add(step4a);
-                    panel.add(step4b);
-                    Frame.add(panel);
-                    
-                    Frame.pack();
-                    Frame.setLocationRelativeTo(menu);
-                    Frame.setVisible(true);
+						JOptionPane.showMessageDialog(rootPane,"Step 1: Click Input.\n"
+						+ "Step 2: Insert data. It reads left to right.\n"
+						+ "Step 3: Close the window and choose a sorting algorithm.\n"
+						+ "Step 4: Click Sort.","How to use the application",JOptionPane.PLAIN_MESSAGE);   
                     }
                 });
                 
